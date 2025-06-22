@@ -34,9 +34,11 @@ def registrar_prediccion():
                     unsafe_allow_html=True,
                 )
             else:
-                if st.button("Seleccionar", key=f"select_btn_{i}"):
-                    st.session_state.opcion_seleccionada = i
-                    st.rerun()
+                centro1, centro2, centro3 = st.columns([1, 2, 1])
+                with centro2:
+                    if st.button("Seleccionar", key=f"select_btn_{i}"):
+                        st.session_state.opcion_seleccionada = i
+                        st.rerun()
 
     if st.session_state.opcion_seleccionada is not None:
         seleccionada = opciones[st.session_state.opcion_seleccionada]
@@ -74,10 +76,7 @@ def registrar_prediccion():
                             "Latitud", "Longitud", "Fecha", "Hora", "Imagen"
                         ])
 
-                    if df.empty or "id" not in df.columns:
-                        nuevo_id = 1
-                    else:
-                        nuevo_id = int(df["id"].max()) + 1
+                    nuevo_id = 1 if df.empty or "id" not in df.columns else int(df["id"].max()) + 1
 
                     now = datetime.now()
                     fecha = now.strftime("%Y-%m-%d")
@@ -91,14 +90,13 @@ def registrar_prediccion():
                     nombre_archivo = f"{nuevo_id}_{nombre_comun}_{timestamp}.jpg"
                     ruta_archivo = os.path.join(imagenes_dir, nombre_archivo)
 
+                    ruta_excel = ""
                     if "imagen_original" in st.session_state:
                         imagen_bgr = st.session_state.imagen_original
                         imagen_rgb = cv2.cvtColor(imagen_bgr, cv2.COLOR_BGR2RGB)
                         imagen_pil = Image.fromarray(imagen_rgb)
                         imagen_pil.save(ruta_archivo)
                         ruta_excel = f"imagenes_registros/{nombre_archivo}"
-                    else:
-                        ruta_excel = ""
 
                     nueva_fila = {
                         "id": nuevo_id,
