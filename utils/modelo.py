@@ -11,6 +11,7 @@ def cargar_modelo():
     file_id = "1H8SWLSj4C8ubdRw2PMs4I_GRbswGfEAh"
     url = f"https://drive.google.com/uc?id={file_id}"
 
+    # Descargar el modelo si no existe
     if not os.path.exists(model_path):
         try:
             gdown.download(url, model_path, quiet=False)
@@ -18,12 +19,9 @@ def cargar_modelo():
             st.error(f"❌ Error al descargar el modelo: {e}")
             return None
 
+    # Cargar el modelo
     try:
         return load_model(model_path)
     except Exception as e:
         st.error(f"❌ Error al cargar el modelo: {e}")
         return None
-
-modelo = cargar_modelo()
-if modelo is None:
-    st.stop()

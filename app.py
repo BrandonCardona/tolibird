@@ -1,6 +1,5 @@
 import streamlit as st
 
-
 st.set_page_config(page_title="Clasificador de Aves", page_icon="🦜", layout="wide")
 
 from funciones.prediccion import clasificar_ave
@@ -8,8 +7,6 @@ from funciones.especieAves import mostrar_especies
 from funciones.presentacion import mostrar_inicio
 from funciones.registro import registrar_prediccion
 from funciones.verRegistros import mostrar_registros_guardados
-
-st.set_page_config(page_title="Clasificador de Aves", page_icon="🦜", layout="wide")
 
 with open("assets/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)

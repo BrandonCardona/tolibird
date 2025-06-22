@@ -16,14 +16,19 @@ def clasificar_ave():
              'Cucarachero Cabecigrís', 'Cucarachero Jaspeado','Cucarachero Bigotudo Montano']
 
     uploaded_file = st.file_uploader("📤 Sube una imagen", type=["jpg", "jpeg", "png"])
-    model = cargar_modelo()
 
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    excel_path = os.path.join(base_dir, "../base_datos/base_datos.xlsx")
-    imagenes_base = os.path.join(base_dir, "../base_datos/imagenes_aves")
-    df = pd.read_excel(excel_path)
+    # Cargar modelo SOLO si el usuario sube una imagen
+    if uploaded_file is not None:
+        model = cargar_modelo()
+        if model is None:
+            st.stop()
 
-    if uploaded_file is not None and model:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        excel_path = os.path.join(base_dir, "../base_datos/base_datos.xlsx")
+        imagenes_base = os.path.join(base_dir, "../base_datos/imagenes_aves")
+        df = pd.read_excel(excel_path)
+
+        # Leer imagen y procesar
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
         image = cv2.imdecode(file_bytes, 1)
         st.session_state.imagen_original = image
@@ -87,7 +92,6 @@ def clasificar_ave():
                 st.markdown("---")
 
             st.session_state.predicciones = predicciones
-
             st.session_state.opcion_seleccionada = None
             st.session_state.coordenadas = None
             st.session_state.prediccion_registrada = None
