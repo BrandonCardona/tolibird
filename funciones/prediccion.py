@@ -17,7 +17,6 @@ def clasificar_ave():
 
     uploaded_file = st.file_uploader("📤 Sube una imagen", type=["jpg", "jpeg", "png"])
 
-    # Cargar modelo SOLO si el usuario sube una imagen
     if uploaded_file is not None:
         model = cargar_modelo()
         if model is None:
@@ -28,7 +27,6 @@ def clasificar_ave():
         imagenes_base = os.path.join(base_dir, "../base_datos/imagenes_aves")
         df = pd.read_excel(excel_path)
 
-        # Leer imagen y procesar
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
         image = cv2.imdecode(file_bytes, 1)
         st.session_state.imagen_original = image

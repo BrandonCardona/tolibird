@@ -26,19 +26,35 @@ def registrar_prediccion():
     for i, (col, opcion) in enumerate(zip(cols, opciones)):
         with col:
             st.image(Image.open(opcion["imagenes"][0]), use_container_width=True)
-            st.markdown(f"<div style='text-align:center; font-weight:bold'>{opcion['nombre']}</div>", unsafe_allow_html=True)
+
+            st.markdown(
+                f"""
+                <div style='display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem; height: 130px;'>
+                    <div style='font-weight: bold; text-align: center;'>{opcion['nombre']}</div>
+                    <form action="" method="post">
+                        <button name="select_btn_{i}" type="submit" style="
+                            padding: 0.3rem 1rem;
+                            background-color: #0e1117;
+                            color: white;
+                            border: 1px solid #555;
+                            border-radius: 0.5rem;
+                            cursor: pointer;
+                        ">Seleccionar</button>
+                    </form>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
             if st.session_state.opcion_seleccionada == i:
                 st.markdown(
                     "<div style='text-align:center; color:green; font-weight:bold;'>✔ Seleccionado</div>",
                     unsafe_allow_html=True,
                 )
-            else:
-                centro1, centro2, centro3 = st.columns([1, 2, 1])
-                with centro2:
-                    if st.button("Seleccionar", key=f"select_btn_{i}"):
-                        st.session_state.opcion_seleccionada = i
-                        st.rerun()
+
+            if f"select_btn_{i}" in st.query_params:
+                st.session_state.opcion_seleccionada = i
+                st.rerun()
 
     if st.session_state.opcion_seleccionada is not None:
         seleccionada = opciones[st.session_state.opcion_seleccionada]
@@ -76,7 +92,7 @@ def registrar_prediccion():
                             "Latitud", "Longitud", "Fecha", "Hora", "Imagen"
                         ])
 
-                    nuevo_id = 1 if df.empty or "id" not in df.columns else int(df["id"].max()) + 1
+                    nuevo_id = int(df["id"].max() + 1) if not df.empty and "id" in df.columns else 1
 
                     now = datetime.now()
                     fecha = now.strftime("%Y-%m-%d")
@@ -90,13 +106,14 @@ def registrar_prediccion():
                     nombre_archivo = f"{nuevo_id}_{nombre_comun}_{timestamp}.jpg"
                     ruta_archivo = os.path.join(imagenes_dir, nombre_archivo)
 
-                    ruta_excel = ""
                     if "imagen_original" in st.session_state:
                         imagen_bgr = st.session_state.imagen_original
                         imagen_rgb = cv2.cvtColor(imagen_bgr, cv2.COLOR_BGR2RGB)
                         imagen_pil = Image.fromarray(imagen_rgb)
                         imagen_pil.save(ruta_archivo)
                         ruta_excel = f"imagenes_registros/{nombre_archivo}"
+                    else:
+                        ruta_excel = ""
 
                     nueva_fila = {
                         "id": nuevo_id,
