@@ -29,32 +29,26 @@ def registrar_prediccion():
 
             st.markdown(
                 f"""
-                <div style='display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem; height: 130px;'>
-                    <div style='font-weight: bold; text-align: center;'>{opcion['nombre']}</div>
-                    <form action="" method="post">
-                        <button name="select_btn_{i}" type="submit" style="
-                            padding: 0.3rem 1rem;
-                            background-color: #0e1117;
-                            color: white;
-                            border: 1px solid #555;
-                            border-radius: 0.5rem;
-                            cursor: pointer;
-                        ">Seleccionar</button>
-                    </form>
+                <div style="text-align:center; margin-top: 10px;">
+                    <div style="font-weight:bold; margin-bottom: 0.5rem;">{opcion['nombre']}</div>
                 </div>
                 """,
                 unsafe_allow_html=True
             )
 
+            btn_col1, btn_col2, btn_col3 = st.columns([1, 2, 1])
+            with btn_col2:
+                if st.button("Seleccionar", key=f"select_btn_{i}"):
+                    st.session_state.opcion_seleccionada = i
+                    st.rerun()
+
             if st.session_state.opcion_seleccionada == i:
                 st.markdown(
-                    "<div style='text-align:center; color:green; font-weight:bold;'>✔ Seleccionado</div>",
-                    unsafe_allow_html=True,
+                    """<div style="text-align:center; color:green; font-weight:bold; margin-top: 0.3rem;">
+                    ✔ Seleccionado
+                    </div>""",
+                    unsafe_allow_html=True
                 )
-
-            if f"select_btn_{i}" in st.query_params:
-                st.session_state.opcion_seleccionada = i
-                st.rerun()
 
     if st.session_state.opcion_seleccionada is not None:
         seleccionada = opciones[st.session_state.opcion_seleccionada]
