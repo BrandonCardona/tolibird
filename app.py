@@ -1,4 +1,8 @@
 import streamlit as st
+
+
+st.set_page_config(page_title="Clasificador de Aves", page_icon="🦜", layout="wide")
+
 from funciones.prediccion import clasificar_ave
 from funciones.especieAves import mostrar_especies
 from funciones.presentacion import mostrar_inicio
